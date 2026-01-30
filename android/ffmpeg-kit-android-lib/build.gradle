@@ -1,21 +1,19 @@
-plugins {
-    id 'com.android.library'
-    id 'com.vanniktech.maven.publish'
-    id 'com.gradleup.nmcp'
-}
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
-    namespace 'com.moizhassan.ffmpeg.ffmpegkit'
-
-    compileSdk COMPILE_SDK_VERSION as int
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.arthenica.ffmpegkit'
+    }
+    compileSdk 35
     ndkVersion "22.1.7171670"
 
     defaultConfig {
-        minSdk MIN_SDK_VERSION as int
-        targetSdk TARGET_SDK_VERSION as int
-        versionCode VERSION_NUMBER as int
-        versionName VERSION_NAME as String
-        project.archivesBaseName = "ffmpegkit"
+        minSdk 16
+        targetSdk 35
+        versionCode 290600
+        versionName "6.0.LTS"
+        project.archivesBaseName = "ffmpeg-kit"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -27,13 +25,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ["./src/main/libs"]
+            jniLibs.srcDirs = ["../libs"]
         }
     }
 
@@ -41,6 +39,14 @@ android {
         unitTests.returnDefaultValues = true
         unitTests.all {
             systemProperty 'enable.ffmpeg.kit.test.mode', 'true'
+        }
+    }
+
+
+    publishing {
+        singleVariant('release') {
+            withJavadocJar()
+            withSourcesJar()
         }
     }
 }
@@ -58,4 +64,17 @@ dependencies {
     api 'com.arthenica:smart-exception-java:0.2.1'
     testImplementation "androidx.test.ext:junit:1.1.5"
     testImplementation 'org.json:json:20230618'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.arthenica'
+                artifactId = 'ffmpeg-kit'
+                version = '6.0-LOCAL'
+            }
+        }
+    }
 }

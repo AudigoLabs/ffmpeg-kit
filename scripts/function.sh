@@ -1095,14 +1095,20 @@ set_library() {
   fontconfig)
     ENABLED_LIBRARIES[LIBRARY_FONTCONFIG]=$2
     ENABLED_LIBRARIES[LIBRARY_EXPAT]=$2
-    set_virtual_library "libiconv" $2
-    set_virtual_library "libuuid" $2
-    set_library "freetype" $2
+    # Only cascade enables, not disables - other libraries may need these dependencies
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "libiconv" $2
+      set_virtual_library "libuuid" $2
+      set_library "freetype" $2
+    fi
     ;;
   freetype)
     ENABLED_LIBRARIES[LIBRARY_FREETYPE]=$2
-    set_virtual_library "zlib" $2
-    set_library "libpng" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "zlib" $2
+      set_library "libpng" $2
+    fi
     ;;
   fribidi)
     ENABLED_LIBRARIES[LIBRARY_FRIBIDI]=$2
@@ -1112,21 +1118,30 @@ set_library() {
     ;;
   gnutls)
     ENABLED_LIBRARIES[LIBRARY_GNUTLS]=$2
-    set_virtual_library "zlib" $2
-    set_library "nettle" $2
-    set_library "gmp" $2
-    set_virtual_library "libiconv" $2
+    # Only cascade enables, not disables - other libraries may need these dependencies
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "zlib" $2
+      set_library "nettle" $2
+      set_library "gmp" $2
+      set_virtual_library "libiconv" $2
+    fi
     ;;
   harfbuzz)
     ENABLED_LIBRARIES[LIBRARY_HARFBUZZ]=$2
-    set_library "freetype" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_library "freetype" $2
+    fi
     ;;
   kvazaar)
     ENABLED_LIBRARIES[LIBRARY_KVAZAAR]=$2
     ;;
   lame)
     ENABLED_LIBRARIES[LIBRARY_LAME]=$2
-    set_virtual_library "libiconv" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "libiconv" $2
+    fi
     ;;
   libaom)
     ENABLED_LIBRARIES[LIBRARY_LIBAOM]=$2
@@ -1134,12 +1149,15 @@ set_library() {
   libass)
     ENABLED_LIBRARIES[LIBRARY_LIBASS]=$2
     ENABLED_LIBRARIES[LIBRARY_EXPAT]=$2
-    set_virtual_library "libuuid" $2
-    set_library "freetype" $2
-    set_library "fribidi" $2
-    set_library "fontconfig" $2
-    set_library "harfbuzz" $2
-    set_virtual_library "libiconv" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "libuuid" $2
+      set_library "freetype" $2
+      set_library "fribidi" $2
+      set_library "fontconfig" $2
+      set_library "harfbuzz" $2
+      set_virtual_library "libiconv" $2
+    fi
     ;;
   libiconv)
     ENABLED_LIBRARIES[LIBRARY_LIBICONV]=$2
@@ -1149,12 +1167,18 @@ set_library() {
     ;;
   libpng)
     ENABLED_LIBRARIES[LIBRARY_LIBPNG]=$2
-    set_virtual_library "zlib" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "zlib" $2
+    fi
     ;;
   libtheora)
     ENABLED_LIBRARIES[LIBRARY_LIBTHEORA]=$2
     ENABLED_LIBRARIES[LIBRARY_LIBOGG]=$2
-    set_library "libvorbis" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_library "libvorbis" $2
+    fi
     ;;
   libuuid)
     ENABLED_LIBRARIES[LIBRARY_LIBUUID]=$2
@@ -1171,14 +1195,20 @@ set_library() {
     ;;
   libwebp)
     ENABLED_LIBRARIES[LIBRARY_LIBWEBP]=$2
-    ENABLED_LIBRARIES[LIBRARY_GIFLIB]=$2
-    ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
-    set_library "tiff" $2
-    set_library "libpng" $2
+    # Only cascade enables, not disables - other libraries may need these dependencies
+    if [[ $2 -eq 1 ]]; then
+      ENABLED_LIBRARIES[LIBRARY_GIFLIB]=$2
+      ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
+      set_library "tiff" $2
+      set_library "libpng" $2
+    fi
     ;;
   libxml2)
     ENABLED_LIBRARIES[LIBRARY_LIBXML2]=$2
-    set_virtual_library "libiconv" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "libiconv" $2
+    fi
     ;;
   opencore-amr)
     ENABLED_LIBRARIES[LIBRARY_OPENCOREAMR]=$2
@@ -1205,7 +1235,10 @@ set_library() {
     ;;
   snappy)
     ENABLED_LIBRARIES[LIBRARY_SNAPPY]=$2
-    set_virtual_library "zlib" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_virtual_library "zlib" $2
+    fi
     ;;
   soxr)
     ENABLED_LIBRARIES[LIBRARY_SOXR]=$2
@@ -1215,17 +1248,23 @@ set_library() {
     ;;
   srt)
     ENABLED_LIBRARIES[LIBRARY_SRT]=$2
-    set_library "openssl" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_library "openssl" $2
+    fi
     ;;
   tesseract)
     ENABLED_LIBRARIES[LIBRARY_TESSERACT]=$2
-    ENABLED_LIBRARIES[LIBRARY_LEPTONICA]=$2
-    ENABLED_LIBRARIES[LIBRARY_LIBWEBP]=$2
-    ENABLED_LIBRARIES[LIBRARY_GIFLIB]=$2
-    ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
-    set_virtual_library "zlib" $2
-    set_library "tiff" $2
-    set_library "libpng" $2
+    # Only cascade enables, not disables - other libraries may need these dependencies
+    if [[ $2 -eq 1 ]]; then
+      ENABLED_LIBRARIES[LIBRARY_LEPTONICA]=$2
+      ENABLED_LIBRARIES[LIBRARY_LIBWEBP]=$2
+      ENABLED_LIBRARIES[LIBRARY_GIFLIB]=$2
+      ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
+      set_virtual_library "zlib" $2
+      set_library "tiff" $2
+      set_library "libpng" $2
+    fi
     ;;
   twolame)
     ENABLED_LIBRARIES[LIBRARY_TWOLAME]=$2
@@ -1251,11 +1290,17 @@ set_library() {
     ;;
   nettle)
     ENABLED_LIBRARIES[LIBRARY_NETTLE]=$2
-    set_library "gmp" $2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      set_library "gmp" $2
+    fi
     ;;
   tiff)
     ENABLED_LIBRARIES[LIBRARY_TIFF]=$2
-    ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
+    # Only cascade enables, not disables
+    if [[ $2 -eq 1 ]]; then
+      ENABLED_LIBRARIES[LIBRARY_JPEG]=$2
+    fi
     ;;
   linux-fontconfig)
     ENABLED_LIBRARIES[LIBRARY_LINUX_FONTCONFIG]=$2

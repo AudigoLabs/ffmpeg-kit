@@ -4,3 +4,4 @@
 .DS_Store
 .idea
 android/secring.gpg
+android/ffmpeg-kit-android-lib/src/main/res/
