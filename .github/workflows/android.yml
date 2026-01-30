@@ -4,35 +4,61 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*'
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22-large
     defaults:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - name: set up adopt jdk 17
+      - name: Check Out Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: '17'
+
       - name: Set up Prerequisites
-        run: ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --uninstall "cmake;3.10.2.4988404" "cmake;3.18.1"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen nasm gperf texinfo yasm autogen autopoint ninja-build ragel groff gtk-doc-tools libtasn1-6-dev
+          sudo pip3 install meson
+          ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --uninstall "cmake;3.10.2.4988404" "cmake;3.18.1"
+          which cmake
+          cmake --version
+
       - name: Download Android NDK
         run: |
           curl -L -s "https://dl.google.com/android/repository/android-ndk-r27-linux.zip" -o ndk.zip
           unzip -q -o ndk.zip -d .ndk
           echo "ANDROID_NDK_ROOT=$PWD/.ndk/android-ndk-r27" >> $GITHUB_ENV
+
       - name: Run the Build
+        timeout-minutes: 90
         run: |
-          /android.sh --full --lts --disable-x86 --disable-x86-64 --disable-arm-v7a-neon --disable-arm-v7a \
-            --disable-lib-srt --disable-lib-gnutls --disable-lib-fontconfig --disable-lib-libuuid --disable-lib-libass \
-            --disable-lib-harfbuzz --disable-lib-freetype --disable-lib-fribidi --disable-lib-tesseract --api-level=29
-          cat build.log
+          mkdir -p android/ffmpeg-kit-android-lib/src/main/res/raw/
+          ./android.sh --lts --disable-x86 --disable-x86-64 --disable-arm-v7a-neon --disable-arm-v7a \
+            --enable-lame --enable-opus \
+            --enable-libogg --enable-libvorbis \
+            --api-level=29
+
+      - name: Dump Build Logs
+        if: ${{ always() }}
+        run: tail -50 build.log
+
+      - name: Upload Build Log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: ignore
+
       - name: Prepare AAR
         run: |
           AAR_PATH=$(find prebuilt -type f -name 'ffmpeg-kit.aar')
@@ -41,6 +67,7 @@ jobs:
             exit 1
           fi
           mv "$AAR_PATH" "ffmpeg-kit-lts.aar"
+
       - name: Upload AAR
         uses: actions/upload-artifact@v4
         with:
