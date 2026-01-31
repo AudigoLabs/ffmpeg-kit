@@ -87,4 +87,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_TAG: ${{ github.event_name == 'push' && github.ref_name || format('{0}-SNAPSHOT', env.LATEST_TAG) }}
         with:
+          build-root-directory: android/ffmpeg-kit-android-lib
           arguments: publish
