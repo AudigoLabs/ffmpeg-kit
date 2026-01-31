@@ -17,6 +17,12 @@ jobs:
       - name: Check Out Repository
         uses: actions/checkout@v4
 
+      - name: Get Latest Tag
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -74,3 +80,11 @@ jobs:
           name: ffmpeg-kit-lts-aar
           path: ffmpeg-kit-lts.aar
           if-no-files-found: error
+
+      - name: Gradle Publish
+        uses: burrunan/gradle-cache-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TAG: ${{ github.event_name == 'push' && github.ref_name || format('{0}-SNAPSHOT', env.LATEST_TAG) }}
+        with:
+          arguments: publish
