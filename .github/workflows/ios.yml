@@ -55,13 +55,13 @@ jobs:
 
       - name: Prepare XCFramework
         run: |
-          XCFRAMEWORK_PATH=$(find prebuilt -type d -name 'ffmpeg-kit.xcframework' | head -1)
-          if [ -z "$XCFRAMEWORK_PATH" ]; then
-            echo "Error: ffmpeg-kit.xcframework not found in prebuilt directory."
+          BUNDLE_PATH=$(find prebuilt -type d -name 'bundle-apple-xcframework-ios-lts' | head -1)
+          if [ -z "$BUNDLE_PATH" ]; then
+            echo "Error: xcframework bundle not found in prebuilt directory."
             find prebuilt -type d -name "*.xcframework" || true
             exit 1
           fi
-          zip -r ffmpeg-kit-ios-lts.xcframework.zip "$XCFRAMEWORK_PATH"
+          zip -r ffmpeg-kit-ios-lts.xcframework.zip "$BUNDLE_PATH"
 
       - name: Upload XCFramework
         uses: actions/upload-artifact@v4
