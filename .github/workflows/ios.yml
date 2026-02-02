@@ -69,3 +69,12 @@ jobs:
           name: ffmpeg-kit-ios-lts-xcframework
           path: ffmpeg-kit-ios-lts.xcframework.zip
           if-no-files-found: error
+
+      - name: Publish to GitHub Packages
+        uses: burrunan/gradle-cache-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_TAG: ${{ github.event_name == 'push' && github.ref_name || format('{0}-SNAPSHOT', env.LATEST_TAG) }}
+        with:
+          build-root-directory: apple
+          arguments: publish
