@@ -85,7 +85,9 @@ jobs:
         uses: burrunan/gradle-cache-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GIT_TAG: ${{ github.event_name == 'push' && github.ref_name || format('{0}-SNAPSHOT', env.LATEST_TAG) }}
         with:
-          build-root-directory: android/ffmpeg-kit-android-lib
-          arguments: assembleRelease publish
+          build-root-directory: android
+          arguments: ffmpeg-kit-android-lib:assembleRelease ffmpeg-kit-android-lib:publish
