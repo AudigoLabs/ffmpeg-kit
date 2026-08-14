@@ -54,6 +54,7 @@ jobs:
           ./android.sh --lts --disable-x86 --disable-x86-64 --disable-arm-v7a-neon --disable-arm-v7a \
             --enable-lame --enable-opus \
             --enable-libogg --enable-libvorbis \
+            --enable-android-media-codec \
             --api-level=29
 
       - name: Dump Build Logs
