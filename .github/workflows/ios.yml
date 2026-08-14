@@ -19,7 +19,7 @@ jobs:
 
       - name: Get Latest Tag
         run: |
-          git fetch --tags
+          git fetch --tags --force
           LATEST_TAG=$(git tag --sort=-v:refname | head -1)
           if [ -z "$LATEST_TAG" ]; then
             LATEST_TAG="0.0.0"
